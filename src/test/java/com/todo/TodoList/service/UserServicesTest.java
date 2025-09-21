@@ -6,29 +6,35 @@ import com.todo.TodoList.dto.response.UserResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+@SpringBootTest
 class UserServicesTest {
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private UserServices userServices;
 
     @BeforeEach
     void setUp() {
-        userRepository = Mockito.mock(UserRepository.class);
-        userServices = new UserServices();
-//        userServices.userRepository = userRepository;
+        userRepository.deleteAll();
+
 
     }
 
     @Test
     void testRegisterNewUser(){
         UserRequestDto userRequestDto = new UserRequestDto();
-        userRequestDto.setName("theo umar");
-        userRequestDto.setEmail("theo@gmail.com");
-        userRequestDto.setPassword("password1234");
 
+         userServices.registerUser(userRequestDto);
+         assertEquals(1,userRepository.count());
 
     }
+
+
 
 }
