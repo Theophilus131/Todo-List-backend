@@ -19,6 +19,7 @@ public class Todo {
     private Boolean completed;
     private LocalDateTime creationDate;
     private LocalDateTime dueDate;
+    private String userId;
 
 }
 
