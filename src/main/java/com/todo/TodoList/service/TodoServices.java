@@ -10,6 +10,7 @@ import com.todo.TodoList.mappers.TodoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +69,7 @@ public class TodoServices {
         todo.setTitle(requestDto.getTitle());
         todo.setDescription(requestDto.getDescription());
         todo.setDueDate(requestDto.getDueDate());
+        todo.setCreationDate(LocalDateTime.now());
 
         Todo updatedTodo = todoRepository.save(todo);
 
