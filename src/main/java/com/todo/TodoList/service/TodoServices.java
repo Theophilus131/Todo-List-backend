@@ -10,17 +10,19 @@ import com.todo.TodoList.mappers.TodoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class TodoServices {
 
     @Autowired
     private TodoRepository todoRepository;
 
-    public TodoResponseDto addTodo(TodoRequestDto requestDto, String userId) {
+    public TodoResponseDto createTodo(String userId, TodoRequestDto requestDto) {
         Todo todo = new Todo();
         todo.setTitle(requestDto.getTitle());
         todo.setDescription(requestDto.getDescription());
@@ -31,7 +33,7 @@ public class TodoServices {
         return TodoMapper.toDto(saved);
     }
 
-    public List<TodoResponseDto> getTodosByUser(String userId) {
+    public List<TodoResponseDto> getTodoByUser(String userId) {
         List<Todo> todos = todoRepository.findByUserId(userId);
         List<TodoResponseDto> dtos = new ArrayList<>();
 
@@ -43,7 +45,7 @@ public class TodoServices {
         return dtos;
     }
 
-    public TodoResponseDto getTodoById(String id, String userId) {
+    public TodoResponseDto getTodoById(String userId, String id) {
         Optional<Todo> optionalTodo = todoRepository.findById(id);
 
         if (!optionalTodo.isPresent()) {
@@ -53,13 +55,13 @@ public class TodoServices {
         Todo todo = optionalTodo.get();
 
         if (!todo.getUserId().equals(userId)) {
-            throw new TodoNotFoundExceptions("Todo not found for this user");
+            throw new TodoNotFoundExceptions("This todo does not belong to user " + userId);
         }
 
         return TodoMapper.toDto(todo);
     }
 
-    public TodoResponseDto updateTodo(String id, TodoRequestDto requestDto, String userId) {
+    public TodoResponseDto updateTodo(String userId, String id, TodoRequestDto requestDto) {
         Optional<Todo> optionalTodo = todoRepository.findById(id);
 
         if (!optionalTodo.isPresent()) {
@@ -69,19 +71,19 @@ public class TodoServices {
         Todo todo = optionalTodo.get();
 
         if (!todo.getUserId().equals(userId)) {
-            throw new TodoNotFoundExceptions("Todo not found for this user");
+            throw new TodoNotFoundExceptions("You are not allowed to update this todo");
         }
 
         todo.setTitle(requestDto.getTitle());
         todo.setDescription(requestDto.getDescription());
         todo.setDueDate(requestDto.getDueDate());
-        todo.setCreationDate(LocalDateTime.now());
+        todo.setCreationDate(LocalDate.from(LocalDateTime.now()));
 
         Todo updatedTodo = todoRepository.save(todo);
         return TodoMapper.toDto(updatedTodo);
     }
 
-    public void deleteTodo(String id, String userId) {
+    public void deleteTodo(String userId, String id) {
         Optional<Todo> optionalTodo = todoRepository.findById(id);
 
         if (!optionalTodo.isPresent()) {
@@ -91,13 +93,13 @@ public class TodoServices {
         Todo todo = optionalTodo.get();
 
         if (!todo.getUserId().equals(userId)) {
-            throw new TodoNotFoundExceptions("Todo not found for this user");
+            throw new TodoNotFoundExceptions("You are not allowed to delete this todo");
         }
 
         todoRepository.delete(todo);
     }
 
-    public TodoResponseDto markAsCompleted(String id, String userId) {
+    public TodoResponseDto markAsCompleted(String userId, String id) {
         Optional<Todo> optionalTodo = todoRepository.findById(id);
 
         if (!optionalTodo.isPresent()) {
@@ -107,12 +109,12 @@ public class TodoServices {
         Todo todo = optionalTodo.get();
 
         if (!todo.getUserId().equals(userId)) {
-            throw new TodoNotFoundExceptions("Todo not found for this user");
+            throw new TodoNotFoundExceptions("You are not allowed to complete this todo");
         }
 
         todo.setCompleted(true);
-        Todo update = todoRepository.save(todo);
+        Todo updatedTodo = todoRepository.save(todo);
 
-        return TodoMapper.toDto(update);
+        return TodoMapper.toDto(updatedTodo);
     }
 }
