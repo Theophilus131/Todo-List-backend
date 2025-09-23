@@ -2,6 +2,7 @@ package com.todo.TodoList.dto.response;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -11,6 +12,6 @@ public class TodoResponseDto {
     private String id;
     private String title;
     private String description;
-    private LocalDateTime createdAt;
-    private LocalDateTime dueDate;
+    private LocalDate createdAt;
+    private LocalDate dueDate;
 }
