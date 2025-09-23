@@ -14,24 +14,25 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-
 @Service
 public class TodoServices {
 
     @Autowired
     private TodoRepository todoRepository;
 
-    public TodoResponseDto createTodo(TodoRequestDto requestDto) {
-        Todo todo = TodoMapper.toEntity(requestDto);
+    public TodoResponseDto addTodo(TodoRequestDto requestDto, String userId) {
+        Todo todo = new Todo();
+        todo.setTitle(requestDto.getTitle());
+        todo.setDescription(requestDto.getDescription());
+        todo.setDueDate(requestDto.getDueDate());
+        todo.setUserId(userId);
+
         Todo saved = todoRepository.save(todo);
         return TodoMapper.toDto(saved);
     }
 
-
-    public List<TodoResponseDto> getAllTodos() {
-
-        List<Todo> todos = todoRepository.findAll();
+    public List<TodoResponseDto> getTodosByUser(String userId) {
+        List<Todo> todos = todoRepository.findByUserId(userId);
         List<TodoResponseDto> dtos = new ArrayList<>();
 
         for (Todo todo : todos) {
@@ -42,8 +43,7 @@ public class TodoServices {
         return dtos;
     }
 
-
-    public TodoResponseDto getTodoById(String id) {
+    public TodoResponseDto getTodoById(String id, String userId) {
         Optional<Todo> optionalTodo = todoRepository.findById(id);
 
         if (!optionalTodo.isPresent()) {
@@ -52,12 +52,14 @@ public class TodoServices {
 
         Todo todo = optionalTodo.get();
 
-        TodoResponseDto dto = TodoMapper.toDto(todo);
-        return dto;
+        if (!todo.getUserId().equals(userId)) {
+            throw new TodoNotFoundExceptions("Todo not found for this user");
+        }
+
+        return TodoMapper.toDto(todo);
     }
 
-
-    public TodoResponseDto updateTodo(String id, TodoRequestDto requestDto) {
+    public TodoResponseDto updateTodo(String id, TodoRequestDto requestDto, String userId) {
         Optional<Todo> optionalTodo = todoRepository.findById(id);
 
         if (!optionalTodo.isPresent()) {
@@ -65,6 +67,10 @@ public class TodoServices {
         }
 
         Todo todo = optionalTodo.get();
+
+        if (!todo.getUserId().equals(userId)) {
+            throw new TodoNotFoundExceptions("Todo not found for this user");
+        }
 
         todo.setTitle(requestDto.getTitle());
         todo.setDescription(requestDto.getDescription());
@@ -72,25 +78,41 @@ public class TodoServices {
         todo.setCreationDate(LocalDateTime.now());
 
         Todo updatedTodo = todoRepository.save(todo);
-
-        TodoResponseDto dto = TodoMapper.toDto(updatedTodo);
-        return dto;
+        return TodoMapper.toDto(updatedTodo);
     }
 
+    public void deleteTodo(String id, String userId) {
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
 
-    public void deleteTodo(String id){
-        todoRepository.deleteById(id);
+        if (!optionalTodo.isPresent()) {
+            throw new TodoNotFoundExceptions("Todo with id " + id + " not found");
+        }
+
+        Todo todo = optionalTodo.get();
+
+        if (!todo.getUserId().equals(userId)) {
+            throw new TodoNotFoundExceptions("Todo not found for this user");
+        }
+
+        todoRepository.delete(todo);
     }
 
-    public TodoResponseDto markAsCompleted(String id){
-       Todo todo = todoRepository.findById(id)
-               .orElseThrow(()-> new TodoNotFoundExceptions("Todo with id " + id + " not found"));
+    public TodoResponseDto markAsCompleted(String id, String userId) {
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
 
-       todo.setCompleted(true);
-       Todo update = todoRepository.save(todo);
+        if (!optionalTodo.isPresent()) {
+            throw new TodoNotFoundExceptions("Todo with id " + id + " not found");
+        }
 
-       return TodoMapper.toDto(update);
+        Todo todo = optionalTodo.get();
 
+        if (!todo.getUserId().equals(userId)) {
+            throw new TodoNotFoundExceptions("Todo not found for this user");
+        }
+
+        todo.setCompleted(true);
+        Todo update = todoRepository.save(todo);
+
+        return TodoMapper.toDto(update);
     }
-
 }
