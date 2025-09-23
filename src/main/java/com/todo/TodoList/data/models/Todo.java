@@ -16,8 +16,8 @@ public class Todo {
     private String id;
     private String title;
     private String description;
-    private Boolean completed;
-    private LocalDateTime creationDate;
+    private Boolean completed = false;
+    private LocalDateTime creationDate = LocalDateTime.now();
     private LocalDateTime dueDate;
     private String userId;
 
