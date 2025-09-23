@@ -3,6 +3,7 @@ package com.todo.TodoList.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -11,6 +12,6 @@ public class UserResponseDto {
     private String id;
     private String name;
     private String email;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
 }
