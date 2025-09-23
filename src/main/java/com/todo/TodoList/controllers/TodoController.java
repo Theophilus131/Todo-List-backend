@@ -9,48 +9,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @CrossOrigin(origins = "http://127.0.0.1:5501")
 @RestController
-@RequestMapping("/todos")
+@RequestMapping("/users/{userId}/todos")
 public class TodoController {
 
     @Autowired
     private TodoServices todoServices;
 
+    // CREATE todo
     @PostMapping
-    public TodoResponseDto createTodo(@Valid @RequestBody TodoRequestDto requestDto,
-                                      @RequestParam String userId) {
-        return todoServices.addTodo(requestDto, userId);
+    public TodoResponseDto createTodo(@PathVariable String userId,
+                                      @Valid @RequestBody TodoRequestDto requestDto) {
+        return todoServices.createTodo(userId, requestDto);
     }
 
+    // GET all todos for a user
     @GetMapping
-    public List<TodoResponseDto> getUserTodos(@RequestParam String userId) {
-        return todoServices.getTodosByUser(userId);
+    public List<TodoResponseDto> getUserTodos(@PathVariable String userId) {
+        return todoServices.getTodoByUser(userId);
     }
 
+    // GET a single todo by id
     @GetMapping("/{id}")
-    public TodoResponseDto getTodoById(@PathVariable String id,
-                                       @RequestParam String userId) {
-        return todoServices.getTodoById(id, userId);
+    public TodoResponseDto getTodoById(@PathVariable String userId,
+                                       @PathVariable String id) {
+        return todoServices.getTodoById(userId, id);
     }
 
+    // UPDATE a todo
     @PutMapping("/{id}")
-    public TodoResponseDto updateTodo(@PathVariable String id,
-                                      @Valid @RequestBody TodoRequestDto requestDto,
-                                      @RequestParam String userId) {
-        return todoServices.updateTodo(id, requestDto, userId);
+    public TodoResponseDto updateTodo(@PathVariable String userId,
+                                      @PathVariable String id,
+                                      @Valid @RequestBody TodoRequestDto requestDto) {
+        return todoServices.updateTodo(userId, id, requestDto);
     }
 
+    // DELETE a todo
     @DeleteMapping("/{id}")
-    public void deleteTodo(@PathVariable String id,
-                           @RequestParam String userId) {
-        todoServices.deleteTodo(id, userId);
+    public void deleteTodo(@PathVariable String userId,
+                           @PathVariable String id) {
+        todoServices.deleteTodo(userId, id);
     }
 
-    @PatchMapping("/{id}/complete")
-    public TodoResponseDto markAsCompleted(@PathVariable String id,
-                                           @RequestParam String userId) {
-        return todoServices.markAsCompleted(id, userId);
+    // MARK AS COMPLETE
+    @PutMapping("/{id}/complete")
+    public TodoResponseDto markAsCompleted(@PathVariable String userId,
+                                           @PathVariable String id) {
+        return todoServices.markAsCompleted(userId, id);
     }
 }
