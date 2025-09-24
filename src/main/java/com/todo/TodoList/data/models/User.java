@@ -19,7 +19,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private LocalDateTime createdAt = LocalDate.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @DBRef
     private List<String> todoIds =new ArrayList<>();
