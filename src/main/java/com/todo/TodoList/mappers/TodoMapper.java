@@ -28,6 +28,8 @@ public class TodoMapper {
         ResponseDto.setDescription(todo.getDescription());
         ResponseDto.setCreatedAt(todo.getCreationDate());
         ResponseDto.setDueDate(todo.getDueDate());
+        ResponseDto.setCompleted(todo.getCompleted());
+        ResponseDto.setUserId(todo.getUserId());
 
         return ResponseDto;
 
