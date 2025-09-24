@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDate.now();
 
     @DBRef
     private List<String> todoIds =new ArrayList<>();
