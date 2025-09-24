@@ -17,7 +17,7 @@ public class TodoController {
     @Autowired
     private TodoServices todoServices;
 
-    // CREATE todo
+    // CREATE
     @PostMapping
     public TodoResponseDto createTodo(@PathVariable String userId,
                                       @Valid @RequestBody TodoRequestDto requestDto) {
