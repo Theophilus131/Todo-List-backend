@@ -14,4 +14,6 @@ public class TodoResponseDto {
     private String description;
     private LocalDate createdAt;
     private LocalDate dueDate;
+    private Boolean completed;
+    private String userId;
 }
