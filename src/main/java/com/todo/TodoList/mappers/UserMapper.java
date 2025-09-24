@@ -22,7 +22,8 @@ public class UserMapper {
 
         userResponse.setId(user.getUserid());
         userResponse.setName(user.getName());
-        userResponse.setEmail(userResponse.getEmail());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setCreatedAt(user.getCreatedAt().toLocalDate());
 
         return userResponse;
     }
