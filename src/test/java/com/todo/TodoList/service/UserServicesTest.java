@@ -5,6 +5,7 @@ import com.todo.TodoList.data.repository.UserRepository;
 import com.todo.TodoList.dto.request.LoginRequestDto;
 import com.todo.TodoList.dto.request.UserRequestDto;
 import com.todo.TodoList.dto.response.UserResponseDto;
+import com.todo.TodoList.exceptions.InvalidCredentialsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -66,30 +67,10 @@ class UserServicesTest {
         assertThat(loggedIn.getName()).isEqualTo("theo");
 
 
-
-
-
     }
 
     @Test
-    void testLoginUserWithWrongPassword(){
-        userServices.registerUser(userRequestDto);
-        LoginRequestDto loginRequestDto = new LoginRequestDto();
-
-    }
-
-    @Test
-    void testLoginUserWithWrongEmail(){
-        userServices.registerUser(userRequestDto);
-    }
-
-    @Test
-    void testLoginUserWithWrongEmailAndPassword(){
-
-    }
-
-    @Test
-    void testRegisterUserAlreadtExitsThrowsException(){
+    void testRegisterUserAlreadyExitsThrowsException(){
         userServices.registerUser(userRequestDto);
         assertThrows(Exception.class, () -> {
             userServices.registerUser(userRequestDto);
@@ -103,6 +84,19 @@ class UserServicesTest {
             userServices.login(new LoginRequestDto());
         });
 
+    }
+
+    @Test
+    void testLoginWithWrongPasswordThrowsException(){
+        userServices.registerUser(userRequestDto);
+
+        LoginRequestDto loginDto = new LoginRequestDto();
+        loginDto.setEmail("john@example.com");
+        loginDto.setPassword("wrongpass");
+
+        assertThrows(InvalidCredentialsException.class, () -> {
+            userServices.login(loginDto);
+        });
     }
 
 
