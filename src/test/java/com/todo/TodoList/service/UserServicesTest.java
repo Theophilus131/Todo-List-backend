@@ -2,6 +2,7 @@ package com.todo.TodoList.service;
 
 import com.todo.TodoList.data.models.User;
 import com.todo.TodoList.data.repository.UserRepository;
+import com.todo.TodoList.dto.request.LoginRequestDto;
 import com.todo.TodoList.dto.request.UserRequestDto;
 import com.todo.TodoList.dto.response.UserResponseDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +48,26 @@ class UserServicesTest {
 
        Optional<User> userInDatabase = userRepository.findByEmail("theo@12.com");
        assertThat(userInDatabase).isPresent();
+
+    }
+
+    @Test
+    void testLoginUser(){
+        userServices.registerUser(userRequestDto);
+
+        LoginRequestDto loginRequestDto = new LoginRequestDto();
+
+        loginRequestDto.setEmail("theo@12.com");
+        loginRequestDto.setPassword("password123");
+
+        UserResponseDto loggedIn = userServices.login(loginRequestDto);
+
+        assertThat(loggedIn.getEmail()).isEqualTo("theo@12.com");
+        assertThat(loggedIn.getName()).isEqualTo("theo");
+
+
+
+
 
     }
 
