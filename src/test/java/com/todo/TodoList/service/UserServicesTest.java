@@ -71,6 +71,31 @@ class UserServicesTest {
 
     }
 
+    @Test
+    void testLoginUserWithWrongPassword(){
+        userServices.registerUser(userRequestDto);
+        LoginRequestDto loginRequestDto = new LoginRequestDto();
+
+    }
+
+    @Test
+    void testLoginUserWithWrongEmail(){
+        userServices.registerUser(userRequestDto);
+    }
+
+    @Test
+    void testLoginUserWithWrongEmailAndPassword(){
+
+    }
+
+    @Test
+    void testRegisterUserAlreadtExitsThrowsException(){
+        userServices.registerUser(userRequestDto);
+        assertThrows(Exception.class, () -> {
+            userServices.registerUser(userRequestDto);
+        });
+    }
+
 
 
 }
