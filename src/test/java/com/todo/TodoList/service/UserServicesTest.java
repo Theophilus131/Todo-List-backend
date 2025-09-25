@@ -94,6 +94,15 @@ class UserServicesTest {
         assertThrows(Exception.class, () -> {
             userServices.registerUser(userRequestDto);
         });
+
+    }
+
+    @Test
+    void testLoginWithNonExistentUserThrowsException(){
+        assertThrows(Exception.class, () -> {
+            userServices.login(new LoginRequestDto());
+        });
+
     }
 
 
