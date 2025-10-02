@@ -108,6 +108,8 @@ class TodoServicesTest {
         requestDto.setDescription("at the store");
         requestDto.setDueDate(LocalDate.now().plusDays(2));
         TodoResponseDto saved = todoServices.createTodo(userId, requestDto);
+
+
         TodoResponseDto completed = todoServices.markAsCompleted(userId, saved.getId());
         assertThat(completed.getCompleted()).isTrue();
     }
